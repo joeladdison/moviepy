@@ -1125,7 +1125,7 @@ class TextClip(ImageClip):
             txt = '@' + temptxt
         else:
             # use a file instead of a text.
-            txt = "@%" + filename
+            txt = "@" + filename
 
         if size is not None:
             size = ('' if size[0] is None else str(size[0]),
@@ -1178,9 +1178,9 @@ class TextClip(ImageClip):
         self.stroke_color = stroke_color
 
         if remove_temp:
-            if os.path.exists(tempfilename):
+            if tempfilename and os.path.exists(tempfilename):
                 os.remove(tempfilename)
-            if os.path.exists(temptxt):
+            if temptxt and os.path.exists(temptxt):
                 os.remove(temptxt)
 
 
