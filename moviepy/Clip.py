@@ -13,6 +13,7 @@ from moviepy.decorators import ( apply_to_mask,
                                  outplace,
                                  convert_to_seconds,
                                  use_clip_fps_by_default)
+from moviepy.tools import is_string
 from tqdm import tqdm
 
 class Clip:
@@ -139,7 +140,7 @@ class Clip:
             newclip.duration = None
             newclip.end = None
             
-        if isinstance(apply_to, str):
+        if is_string(apply_to):
             apply_to = [apply_to]
 
         for attr in apply_to:

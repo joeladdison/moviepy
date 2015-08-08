@@ -3,7 +3,7 @@
 import re
 import numpy as np
 from moviepy.video.VideoClip import VideoClip, TextClip
-from moviepy.tools import cvsecs
+from moviepy.tools import cvsecs, is_string
 from moviepy.decorators import convert_to_seconds
 
 
@@ -38,7 +38,7 @@ class SubtitlesClip(VideoClip):
         
         VideoClip.__init__(self, has_constant_size=False)
 
-        if isinstance( subtitles, str):
+        if is_string(subtitles):
             subtitles = file_to_subtitles(subtitles)
 
         subtitles = [(map(cvsecs, tt),txt) for tt, txt in subtitles]

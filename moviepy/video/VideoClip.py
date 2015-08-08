@@ -542,7 +542,7 @@ class VideoClip(Clip):
         pos = self.pos(ct)
 
         # preprocess short writings of the position
-        if isinstance(pos, str):
+        if is_string(pos):
             pos = {'center': ['center', 'center'],
                    'left': ['left', 'center'],
                    'right': ['right', 'center'],
@@ -554,14 +554,14 @@ class VideoClip(Clip):
         # is the position relative (given in % of the clip's size) ?
         if self.relative_pos:
             for i, dim in enumerate(wf, hf):
-                if not isinstance(pos[i], str):
+                if not is_string(pos[i]):
                     pos[i] = dim * pos[i]
 
-        if isinstance(pos[0], str):
+        if is_string(pos[0]):
             D = {'left': 0, 'center': (wf - wi) / 2, 'right': wf - wi}
             pos[0] = D[pos[0]]
 
-        if isinstance(pos[1], str):
+        if is_string(pos[1]):
             D = {'top': 0, 'center': (hf - hi) / 2, 'bottom': hf - hi}
             pos[1] = D[pos[1]]
 
@@ -919,7 +919,7 @@ class ImageClip(VideoClip):
 
         VideoClip.__init__(self, ismask=ismask, duration=duration)
 
-        if isinstance(img, str):
+        if is_string(img):
             img = imread(img)
 
         if len(img.shape) == 3:  # img is (now) a RGB(a) numpy array

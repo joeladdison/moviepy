@@ -2,6 +2,7 @@ import os
 import numpy as np
 
 from ..VideoClip import VideoClip
+from moviepy.tools import is_string
 from imageio import imread
 
 
@@ -60,7 +61,7 @@ class ImageSequenceClip(VideoClip):
         fromfiles = True
 
         if isinstance(sequence, list):
-            if isinstance(sequence[0], str):
+            if is_string(sequence[0]):
                 if load_images:
                     sequence = [imread(f) for f in sequence]
                     fromfiles = False
