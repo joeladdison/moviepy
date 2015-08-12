@@ -104,7 +104,7 @@ class VideoClip(Clip):
             self.make_frame = make_frame
             self.size = self.get_frame(0).shape[:2][::-1]
         self.ismask = ismask
-        self.has_constant_size=has_constant_size
+        self.has_constant_size = has_constant_size
         if duration is not None:
             self.duration = duration
             self.end = duration
@@ -113,15 +113,12 @@ class VideoClip(Clip):
     def w(self):
         return self.size[0]
 
-
     @property
     def h(self):
         return self.size[1]
 
-
     # ===============================================================
     # EXPORT OPERATIONS
-
 
     @convert_to_seconds(['t'])
     @convert_masks_to_RGB
@@ -137,7 +134,7 @@ class VideoClip(Clip):
 
         """
 
-        im = self.get_frame(t) 
+        im = self.get_frame(t)
 
         if withmask and self.mask is not None:
             mask = 255 * self.mask.get_frame(t)
@@ -146,7 +143,6 @@ class VideoClip(Clip):
             im = im.astype("uint8")
 
         imsave(filename, im)
-
 
     @requires_duration
     @use_clip_fps_by_default
@@ -188,8 +184,9 @@ class VideoClip(Clip):
           makes well-compressed videos (quality tunable using 'bitrate').
 
 
-          ``'mpeg4'`` (other codec for extension ``.mp4``) can be an alternative
-          to ``'libx264'``, and produces higher quality videos by default.
+          ``'mpeg4'`` (other codec for extension ``.mp4``) can be an
+          alternative to ``'libx264'``, and produces higher quality videos
+          by default.
 
 
           ``'rawvideo'`` (use file extension ``.avi``) will produce
@@ -276,8 +273,8 @@ class VideoClip(Clip):
                 codec = extensions_dict[ext]['codec'][0]
             except KeyError:
                 raise ValueError("MoviePy couldn't find the codec associated "
-                                 "with the filename. Provide the 'codec' parameter in "
-                                 "write_videofile.")
+                                 "with the filename. Provide the 'codec' "
+                                 "parameter in write_videofile.")
 
         if audio_codec is None:
             if (ext in ['ogv', 'webm']):
@@ -290,7 +287,7 @@ class VideoClip(Clip):
             audio_codec = 'pcm_s32le'
 
         audiofile = audio if is_string(audio) else None
-        make_audio = ((audiofile is None) and (audio == True) and
+        make_audio = ((audiofile is None) and (audio is True) and
                       (self.audio is not None))
 
         if make_audio:
@@ -311,8 +308,9 @@ class VideoClip(Clip):
 
                         raise ValueError(
                             "The audio_codec you chose is unknown by MoviePy. "
-                            "You should report this. In the meantime, you can specify a "
-                            "temp_audiofile with the right extension in write_videofile.")
+                            "You should report this. In the meantime, you can "
+                            "specify a temp_audiofile with the right "
+                            "extension in write_videofile.")
 
                 audiofile = (name + Clip._TEMP_FILES_PREFIX +
                              "wvf_snd.%s" % audio_ext)
@@ -333,15 +331,15 @@ class VideoClip(Clip):
                            bitrate=bitrate,
                            preset=preset,
                            write_logfile=write_logfile,
-                           audiofile = audiofile,
+                           audiofile=audiofile,
                            verbose=verbose, threads=threads,
                            ffmpeg_params=ffmpeg_params)
 
         if remove_temp and make_audio:
             os.remove(audiofile)
 
-        verbose_print(verbose, "[MoviePy] >>>> Video ready: %s \n\n"%filename)
-
+        verbose_print(
+            verbose, "[MoviePy] >>>> Video ready: %s \n\n" % filename)
 
     @requires_duration
     @use_clip_fps_by_default
@@ -402,8 +400,6 @@ class VideoClip(Clip):
 
         return filenames
 
-
-
     @requires_duration
     @convert_masks_to_RGB
     def write_gif(self, filename, fps=None, program='imageio',
@@ -428,11 +424,12 @@ class VideoClip(Clip):
 
         program
           Software to use for the conversion, either 'imageio' (this will use
-          the library FreeImage through ImageIO), or 'ImageMagick', or 'ffmpeg'.
+          the library FreeImage through ImageIO), or 'ImageMagick',
+          or 'ffmpeg'.
 
         opt
-          Optimalization to apply. If program='imageio', opt must be either 'wu'
-          (Wu) or 'nq' (Neuquant). If program='ImageMagick',
+          Optimalization to apply. If program='imageio', opt must be either
+          'wu' (Wu) or 'nq' (Neuquant). If program='ImageMagick',
           either 'optimizeplus' or 'OptimizeTransparency'.
 
         fuzz
@@ -457,9 +454,9 @@ class VideoClip(Clip):
         #  refactor a little... we will see.
 
         if program == 'imageio':
-            write_gif_with_image_io(self, filename, fps=fps, opt=opt, loop=loop,
-                                    verbose=verbose, colors=colors)
-        
+            write_gif_with_image_io(self, filename, fps=fps, opt=opt,
+                                    loop=loop, verbose=verbose, colors=colors)
+
         elif tempfiles:
             write_gif_with_tempfiles(self, filename, fps=fps,
                                      program=program, opt=opt, fuzz=fuzz,
@@ -472,8 +469,6 @@ class VideoClip(Clip):
 
     # -----------------------------------------------------------------
     # F I L T E R I N G
-
-
 
     def subfx(self, fx, ta=0, tb=None, **kwargs):
         """ Apply a transformation to a part of the clip.
@@ -504,7 +499,6 @@ class VideoClip(Clip):
 
     # IMAGE FILTERS
 
-
     def fl_image(self, image_func, apply_to=[]):
         """
         Modifies the images of a clip by replacing the frame
@@ -514,7 +508,6 @@ class VideoClip(Clip):
 
     # --------------------------------------------------------------
     # C O M P O S I T I N G
-
 
     def blit_on(self, picture, t):
         """
@@ -526,7 +519,8 @@ class VideoClip(Clip):
         hf, wf = framesize = picture.shape[:2]
 
         if self.ismask and picture.max() != 0:
-            return np.minimum(1, picture + self.blit_on(np.zeros(framesize), t))
+            return np.minimum(
+                1, picture + self.blit_on(np.zeros(framesize), t))
 
         ct = t - self.start  # clip time
 
@@ -569,7 +563,6 @@ class VideoClip(Clip):
 
         return blit(img, picture, pos, mask=mask, ismask=self.ismask)
 
-
     def add_mask(self):
         """ Add a mask VideoClip to the VideoClip.
 
@@ -584,10 +577,10 @@ class VideoClip(Clip):
             mask = ColorClip(self.size, 1.0, ismask=True)
             return self.set_mask(mask.set_duration(self.duration))
         else:
-            make_frame = lambda t: np.ones(self.get_frame(t).shape[:2], dtype=float)
+            make_frame = lambda t: np.ones(
+                self.get_frame(t).shape[:2], dtype=float)
             mask = VideoClip(ismask=True, make_frame=make_frame)
             return self.set_mask(mask.set_duration(self.duration))
-
 
     def on_color(self, size=None, color=(0, 0, 0), pos=None,
                  col_opacity=None):
@@ -633,14 +626,13 @@ class VideoClip(Clip):
                                         bg_color=color)
 
         if (isinstance(self, ImageClip) and (not hasattr(pos, "__call__"))
-            and ((self.mask is None) or isinstance(self.mask, ImageClip))):
+                and ((self.mask is None) or isinstance(self.mask, ImageClip))):
             new_result = result.to_ImageClip()
             if result.mask is not None:
                 new_result.mask = result.mask.to_ImageClip()
             return new_result.set_duration(result.duration)
 
         return result
-
 
     @outplace
     def set_make_frame(self, mf):
@@ -652,7 +644,6 @@ class VideoClip(Clip):
         self.make_frame = mf
         self.size = self.get_frame(0).shape[:2][::-1]
 
-
     @outplace
     def set_audio(self, audioclip):
         """ Attach an AudioClip to the VideoClip.
@@ -662,16 +653,14 @@ class VideoClip(Clip):
         """
         self.audio = audioclip
 
-
     @outplace
     def set_mask(self, mask):
         """ Set the clip's mask.
 
         Returns a copy of the VideoClip with the mask attribute set to
         ``mask``, which must be a greyscale (values in 0-1) VideoClip"""
-        assert ( (mask is None) or mask.ismask )
+        assert ((mask is None) or mask.ismask)
         self.mask = mask
-
 
     @add_mask_if_none
     @outplace
@@ -683,7 +672,6 @@ class VideoClip(Clip):
         """
 
         self.mask = self.mask.fl_image(lambda pic: op * pic)
-
 
     @apply_to_mask
     @outplace
@@ -718,11 +706,8 @@ class VideoClip(Clip):
         else:
             self.pos = lambda t: pos
 
-
-    #--------------------------------------------------------------
+    # --------------------------------------------------------------
     # CONVERSIONS TO OTHER TYPES
-
-
 
     @convert_to_seconds(['t'])
     def to_ImageClip(self, t=0, with_mask=True):
@@ -736,7 +721,6 @@ class VideoClip(Clip):
             newclip.mask = self.mask.to_ImageClip(t)
         return newclip
 
-
     def to_mask(self, canal=0):
         """
         Returns a mask a video clip made from the clip.
@@ -748,7 +732,6 @@ class VideoClip(Clip):
                                     1.0 * pic[:, :, canal] / 255)
             newclip.ismask = True
             return newclip
-
 
     def to_RGB(self):
         """
@@ -762,9 +745,8 @@ class VideoClip(Clip):
         else:
             return self
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     # Audio
-
 
     @outplace
     def without_audio(self):
@@ -775,7 +757,6 @@ class VideoClip(Clip):
         """
         self.audio = None
 
-
     @outplace
     def afx(self, fun, *a, **k):
         """ Transform the clip's audio.
@@ -784,7 +765,6 @@ class VideoClip(Clip):
 
         """
         self.audio = self.audio.fx(fun, *a, **k)
-
 
 
 class DataVideoClip(VideoClip):
@@ -811,22 +791,20 @@ class DataVideoClip(VideoClip):
                  has_constant_size=True):
         self.data = data
         self.data_to_frame = data_to_frame
-        self.fps=fps
-        make_frame = lambda t: self.data_to_frame( self.data[int(self.fps*t)])
-        VideoClip.__init__(self, make_frame, ismask=ismask,
-               duration=1.0*len(data)/fps, has_constant_size=has_constant_size)
-
-
+        self.fps = fps
+        make_frame = lambda t: self.data_to_frame(self.data[int(self.fps*t)])
+        VideoClip.__init__(
+            self, make_frame, ismask=ismask,
+            duration=1.0*len(data)/fps, has_constant_size=has_constant_size)
 
 
 class UpdatedVideoClip(VideoClip):
     """
-        
     Class of clips whose make_frame requires some objects to
     be updated. Particularly practical in science where some
     algorithm needs to make some steps before a new frame can
     be generated.
-    
+
     UpdatedVideoClips have the following make_frame:
 
     >>> def make_frame(t):
@@ -850,23 +828,20 @@ class UpdatedVideoClip(VideoClip):
 
     duration
       Duration of the clip, in seconds
-          
+
     """
-    
-    
+
     def __init__(self, world, ismask=False, duration=None):
-        
+
         self.world = world
+
         def make_frame(t):
             while self.world.clip_t < t:
                 world.update()
             return world.to_frame()
-        VideoClip.__init__(self, make_frame= make_frame,
-                               ismask=ismask, duration=duration)
 
-
-
-
+        VideoClip.__init__(self, make_frame=make_frame,
+                           ismask=ismask, duration=duration)
 
 
 """---------------------------------------------------------------------
@@ -913,7 +888,6 @@ class ImageClip(VideoClip):
 
     """
 
-
     def __init__(self, img, ismask=False, transparent=True,
                  fromalpha=False, duration=None):
 
@@ -942,7 +916,6 @@ class ImageClip(VideoClip):
         self.size = img.shape[:2][::-1]
         self.img = img
 
-
     def fl(self, fl, apply_to=[], keep_duration=True):
         """ General transformation filter.
 
@@ -956,7 +929,6 @@ class ImageClip(VideoClip):
                                keep_duration=keep_duration)
         newclip.__class__ = VideoClip
         return newclip
-
 
     @outplace
     def fl_image(self, image_func, apply_to=[]):
@@ -978,7 +950,6 @@ class ImageClip(VideoClip):
                 if a is not None:
                     new_a = a.fl_image(image_func)
                     setattr(self, attr, new_a)
-
 
     @outplace
     def fl_time(self, time_func, apply_to=['mask', 'audio'],
@@ -1005,13 +976,13 @@ class ImageClip(VideoClip):
 # The old functions to_videofile, to_gif, to_images sequences have been
 # replaced by the more explicite write_videofile, write_gif, etc.
 
-VideoClip.set_pos = deprecated_version_of(VideoClip.set_position,
-                                                'set_pos')
-VideoClip.to_videofile = deprecated_version_of(VideoClip.write_videofile,
-                                               'to_videofile')
+VideoClip.set_pos = deprecated_version_of(
+    VideoClip.set_position, 'set_pos')
+VideoClip.to_videofile = deprecated_version_of(
+    VideoClip.write_videofile, 'to_videofile')
 VideoClip.to_gif = deprecated_version_of(VideoClip.write_gif, 'to_gif')
-VideoClip.to_images_sequence = deprecated_version_of(VideoClip.write_images_sequence,
-                                               'to_images_sequence')
+VideoClip.to_images_sequence = deprecated_version_of(
+    VideoClip.write_images_sequence, 'to_images_sequence')
 
 
 class ColorClip(ImageClip):
@@ -1031,7 +1002,6 @@ class ColorClip(ImageClip):
     ismask
       Set to true if the clip will be used as a mask.
     """
-
 
     def __init__(self, size, col=(0, 0, 0), ismask=False, duration=None):
         w, h = size
@@ -1104,7 +1074,6 @@ class TextClip(ImageClip):
 
     """
 
-
     def __init__(self, txt=None, filename=None, size=None, color='black',
                  bg_color='transparent', fontsize=None, font='Courier',
                  stroke_color=None, stroke_width=1, method='label',
@@ -1112,7 +1081,6 @@ class TextClip(ImageClip):
                  tempfilename=None, temptxt=None,
                  transparent=True, remove_temp=True,
                  print_cmd=False):
-
 
         if txt is not None:
             if temptxt is None:
@@ -1131,10 +1099,10 @@ class TextClip(ImageClip):
             size = ('' if size[0] is None else str(size[0]),
                     '' if size[1] is None else str(size[1]))
 
-        cmd = ( [get_setting("IMAGEMAGICK_BINARY"),
+        cmd = [get_setting("IMAGEMAGICK_BINARY"),
                "-background", bg_color,
                "-fill", color,
-               "-font", font])
+               "-font", font]
 
         if fontsize is not None:
             cmd += ["-pointsize", "%d" % fontsize]
@@ -1158,18 +1126,19 @@ class TextClip(ImageClip):
                 "-type", "truecolormatte", "PNG32:%s" % tempfilename]
 
         if print_cmd:
-            print( " ".join(cmd) )
-        
+            print(" ".join(cmd))
+
         try:
-            subprocess_call(cmd, verbose=False )
-        except (IOError,OSError) as err:
-            error = ("MoviePy Error: creation of %s failed because "
-              "of the following error:\n\n%s.\n\n."%(filename, str(err))
-               + ("This error can be due to the fact that "
-                    "ImageMagick is not installed on your computer, or "
-                    "(for Windows users) that you didn't specify the "
-                    "path to the ImageMagick binary in file conf.py, or."
-                    "that the path you specified is incorrect" ))
+            subprocess_call(cmd, verbose=False)
+        except (IOError, OSError) as err:
+            error = (
+                "MoviePy Error: creation of %s failed because " +
+                "of the following error:\n\n%s.\n\n." % (filename, str(err)) +
+                "This error can be due to the fact that " +
+                "ImageMagick is not installed on your computer, or " +
+                "(for Windows users) that you didn't specify the " +
+                "path to the ImageMagick binary in file conf.py, or." +
+                "that the path you specified is incorrect")
             raise IOError(error)
 
         ImageClip.__init__(self, tempfilename, transparent=transparent)
@@ -1182,7 +1151,6 @@ class TextClip(ImageClip):
                 os.remove(tempfilename)
             if temptxt and os.path.exists(temptxt):
                 os.remove(temptxt)
-
 
     @staticmethod
     def list(arg):
@@ -1213,7 +1181,7 @@ class TextClip(ImageClip):
 
            >>> # Find all the available fonts which contain "Courier"
            >>> print ( TextClip.search('Courier', 'font') )
- 
+
         """
         string = string.lower()
         names_list = TextClip.list(arg)

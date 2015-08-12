@@ -27,10 +27,10 @@ FFMPEG_BINARY
     case image-io will download the right ffmpeg binary (at first use) and then
     always use that binary.
     The second option is 'auto-detect', in this case ffmpeg will be whatever
-    binary is found on the computer generally 'ffmpeg' (on linux) or 'ffmpeg.exe'
-    (on windows).
-    Third option: If you want to use a binary at a special location on you disk,
-    enter it like that:
+    binary is found on the computer generally 'ffmpeg' (on linux) or
+    'ffmpeg.exe' (on windows).
+    Third option: If you want to use a binary at a special location on your
+    disk, enter it like that:
 
     FFMPEG_BINARY = r"path/to/ffmpeg" # on linux
     FFMPEG_BINARY = r"path\to\ffmpeg.exe" # on windows

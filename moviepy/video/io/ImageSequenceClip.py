@@ -8,9 +8,7 @@ from imageio import imread
 
 class ImageSequenceClip(VideoClip):
     """
-    
     A VideoClip made from a series of images.
-    
 
     Parameters
     -----------
@@ -20,7 +18,7 @@ class ImageSequenceClip(VideoClip):
       - The name of a folder (containing only pictures). The pictures
         will be considered in alphanumerical order.
       - A list of names of image files. In this case you can choose to
-        load the pictures in memory pictures 
+        load the pictures in memory pictures
       - A list of Numpy arrays representing images. In this last case,
         masks are not supported currently.
 
@@ -40,19 +38,16 @@ class ImageSequenceClip(VideoClip):
     Notes
     ------
 
-    If your sequence is made of image files, the only image kept in 
+    If your sequence is made of image files, the only image kept in
 
-
-    
     """
-
 
     def __init__(self, sequence, fps=None, durations=None, with_mask=True,
                  ismask=False, load_images=False):
 
         # CODE WRITTEN AS IT CAME, MAY BE IMPROVED IN THE FUTURE
-        
-        if (fps is None) and (duration is None):
+
+        if fps is None and duration is None:
             raise ValueError("Please provide either 'fps' or 'durations'.")
         VideoClip.__init__(self, ismask=ismask)
 
@@ -66,7 +61,7 @@ class ImageSequenceClip(VideoClip):
                     sequence = [imread(f) for f in sequence]
                     fromfiles = False
                 else:
-                    fromfiles= True
+                    fromfiles = True
             else:
                 # sequence is already a list of numpy arrays
                 fromfiles = False
@@ -74,7 +69,7 @@ class ImageSequenceClip(VideoClip):
             # sequence is a folder name, make it a list of files:
             fromfiles = True
             sequence = sorted([os.path.join(sequence, f)
-                        for f in os.listdir(sequence)])
+                               for f in os.listdir(sequence)])
 
         self.fps = fps
         if fps is not None:
@@ -84,37 +79,36 @@ class ImageSequenceClip(VideoClip):
         self.duration = sum(durations)
         self.end = self.duration
         self.sequence = sequence
-        
+
         def find_image_index(t):
             return max([i for i in range(len(self.sequence))
-                              if self.images_starts[i]<=t])
+                        if self.images_starts[i] <= t])
 
         if fromfiles:
-
             self.lastindex = None
             self.lastimage = None
 
             def make_frame(t):
-            
+
                 index = find_image_index(t)
 
                 if index != self.lastindex:
-                    self.lastimage = imread(self.sequence[index])[:,:,:3] 
+                    self.lastimage = imread(self.sequence[index])[:, :, :3]
                     self.lastindex = index
-                
+
                 return self.lastimage
 
-            if with_mask and (imread(self.sequence[0]).shape[2]==4):
+            if with_mask and (imread(self.sequence[0]).shape[2] == 4):
 
                 self.mask = VideoClip(ismask=True)
                 self.mask.lastindex = None
                 self.mask.lastimage = None
 
                 def mask_make_frame(t):
-            
+
                     index = find_image_index(t)
                     if index != self.mask.lastindex:
-                        frame = imread(self.sequence[index])[:,:,3]
+                        frame = imread(self.sequence[index])[:, :, 3]
                         self.mask.lastimage = frame.astype(float)/255
                         self.mask.lastindex = index
 
@@ -123,25 +117,22 @@ class ImageSequenceClip(VideoClip):
                 self.mask.make_frame = mask_make_frame
                 self.mask.size = mask_make_frame(0).shape[:2][::-1]
 
-
         else:
 
             def make_frame(t):
-            
                 index = find_image_index(t)
-                return self.sequence[index][:,:,:3]
+                return self.sequence[index][:, :, :3]
 
-            if with_mask and (self.sequence[0].shape[2]==4):
+            if with_mask and (self.sequence[0].shape[2] == 4):
 
                 self.mask = VideoClip(ismask=True)
 
                 def mask_make_frame(t):
                     index = find_image_index(t)
-                    return 1.0*self.sequence[index][:,:,3]/255
+                    return 1.0*self.sequence[index][:, :, 3]/255
 
                 self.mask.make_frame = mask_make_frame
                 self.mask.size = mask_make_frame(0).shape[:2][::-1]
-        
-            
+
         self.make_frame = make_frame
         self.size = make_frame(0).shape[:2][::-1]

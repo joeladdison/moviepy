@@ -1,6 +1,5 @@
-from moviepy.decorators import (apply_to_mask,
-                                 apply_to_audio,
-                                 requires_duration)
+from moviepy.decorators import (
+    apply_to_mask, apply_to_audio, requires_duration)
 
 
 @requires_duration
@@ -10,7 +9,7 @@ def loop(self, n=None, duration=None):
     """
     Returns a clip that plays the current clip in an infinite loop.
     Ideal for clips coming from gifs.
-    
+
     Parameters
     ------------
     n

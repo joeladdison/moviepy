@@ -9,6 +9,7 @@ from .CompositeVideoClip import CompositeVideoClip
 from moviepy.video.fx.fadein import fadein
 from moviepy.video.fx.fadeout import fadeout
 
+
 @add_mask_if_none
 def crossfadein(clip, duration):
     """ Makes the clip appear progressively, over ``duration`` seconds.
@@ -30,8 +31,6 @@ def crossfadeout(clip, duration):
     return newclip
 
 
-
-
 def slide_in(clip, duration, side):
     """ Makes the clip arrive from one side of the screen.
 
@@ -40,7 +39,7 @@ def slide_in(clip, duration, side):
 
     Parameters
     ===========
-    
+
     clip
       A video clip.
 
@@ -50,10 +49,10 @@ def slide_in(clip, duration, side):
     side
       Side of the screen where the clip comes from. One of
       'top' | 'bottom' | 'left' | 'right'
-    
+
     Examples
     =========
-    
+
     >>> from moviepy.editor import *
     >>> clips = [... make a list of clips]
     >>> slided_clips = [clip.fx( transfx.slide_in, 1, 'left')
@@ -61,14 +60,13 @@ def slide_in(clip, duration, side):
     >>> final_clip = concatenate( slided_clips, padding=-1)
 
     """
-    w,h = clip.size
-    pos_dict = {'left' : lambda t: (min(0,w*(t/duration-1)),'center'),
-                'right' : lambda t: (max(0,w*(1-t/duration)),'center'),
-                'top' : lambda t: ('center',min(0,h*(t/duration-1))),
-                'bottom': lambda t: ('center',max(0,h*(1-t/duration)))}
-    
-    return clip.set_pos( pos_dict[side] )
+    w, h = clip.size
+    pos_dict = {'left': lambda t: (min(0, w*(t/duration-1)), 'center'),
+                'right': lambda t: (max(0, w*(1-t/duration)), 'center'),
+                'top': lambda t: ('center', min(0, h*(t/duration-1))),
+                'bottom': lambda t: ('center', max(0, h*(1-t/duration)))}
 
+    return clip.set_pos(pos_dict[side])
 
 
 @requires_duration
@@ -80,7 +78,7 @@ def slide_out(clip, duration, side):
 
     Parameters
     ===========
-    
+
     clip
       A video clip.
 
@@ -90,10 +88,10 @@ def slide_out(clip, duration, side):
     side
       Side of the screen where the clip goes. One of
       'top' | 'bottom' | 'left' | 'right'
-    
+
     Examples
     =========
-    
+
     >>> from moviepy.editor import *
     >>> clips = [... make a list of clips]
     >>> slided_clips = [clip.fx( transfx.slide_out, 1, 'bottom')
@@ -102,31 +100,23 @@ def slide_out(clip, duration, side):
 
     """
 
-    w,h = clip.size
-    t_s = clip.duration - duration # start time of the effect.
-    pos_dict = {'left' : lambda t: (min(0,w*(1-(t-ts)/duration)),'center'),
-                'right' : lambda t: (max(0,w*((t-ts)/duration-1)),'center'),
-                'top' : lambda t: ('center',min(0,h*(1-(t-ts)/duration))),
-                'bottom': lambda t: ('center',max(0,h*((t-ts)/duration-1))) }
-    
-    return clip.set_pos( pos_dict[side] )
+    w, h = clip.size
+    t_s = clip.duration - duration  # start time of the effect.
+    pos_dict = {
+        'left': lambda t: (min(0, w*(1-(t-ts)/duration)), 'center'),
+        'right': lambda t: (max(0, w*((t-ts)/duration-1)), 'center'),
+        'top': lambda t: ('center', min(0, h*(1-(t-ts)/duration))),
+        'bottom': lambda t: ('center', max(0, h*((t-ts)/duration-1)))
+    }
 
-
-
-
-
-
-
-
+    return clip.set_pos(pos_dict[side])
 
 
 @requires_duration
 def make_loopable(clip, cross_duration):
     """ Makes the clip fade in progressively at its own end, this way
     it can be looped indefinitely. ``cross`` is the duration in seconds
-    of the fade-in.  """  
+    of the fade-in.  """
     d = clip.duration
-    clip2 = clip.fx(crossfadein, cross_duration).\
-                 set_start(d - cross_duration)
-    return CompositeVideoClip([ clip, clip2 ]).\
-                 subclip(cross_duration,d)
+    clip2 = clip.fx(crossfadein, cross_duration).set_start(d - cross_duration)
+    return CompositeVideoClip([clip, clip2]).subclip(cross_duration, d)

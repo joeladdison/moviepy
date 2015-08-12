@@ -3,11 +3,13 @@ import numpy as np
 try:
     from PIL import Image
     PIL_FOUND = True
+
     def pil_rotater(pic, angle, resample, expand):
-        return np.array( Image.fromarray(pic).rotate(angle, expand=expand,
-                                                     resample=resample))
+        return np.array(Image.fromarray(pic).rotate(angle, expand=expand,
+                                                    resample=resample))
 except ImportError:
     PIL_FOUND = False
+
 
 def rotate(clip, angle, unit='deg', resample="bicubic", expand=True):
     """
@@ -33,9 +35,10 @@ def rotate(clip, angle, unit='deg', resample="bicubic", expand=True):
       One of "nearest", "bilinear", or "bicubic".
 
     expand
-      Only applIf False, the clip will maintain the same True, the clip will be resized so that the whole
+      Only applIf False, the clip will maintain the same True, the clip will
+      be resized so that the whole
     """
-    
+
     resample = {"bilinear": Image.BILINEAR,
                 "nearest": Image.NEAREST,
                 "bicubic": Image.BICUBIC}[resample]
@@ -45,7 +48,7 @@ def rotate(clip, angle, unit='deg', resample="bicubic", expand=True):
         a = +angle
         angle = lambda t: a
 
-    transpo = [1,0] if clip.ismask else [1,0,2]
+    transpo = [1, 0] if clip.ismask else [1, 0, 2]
 
     def fl(gf, t):
 
@@ -54,13 +57,13 @@ def rotate(clip, angle, unit='deg', resample="bicubic", expand=True):
 
         if unit == 'rad':
             a = 360.0*a/(2*np.pi)
-        
-        if (a==90) and expand:
+
+        if (a == 90) and expand:
             return np.transpose(im, axes=transpo)[::-1]
-        elif (a==-90) and expand:
-            return np.transpose(im, axes=transpo)[:,::-1]
+        elif (a == -90) and expand:
+            return np.transpose(im, axes=transpo)[:, ::-1]
         elif (a in [180, -180]) and expand:
-            return im[::-1,::-1]
+            return im[::-1, ::-1]
         elif not PIL_FOUND:
             raise ValueError('Without "Pillow" installed, only angles 90, -90,'
                              '180 are supported, please install "Pillow" with'

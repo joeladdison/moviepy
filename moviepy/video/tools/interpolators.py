@@ -5,14 +5,15 @@ Requires Scipy installed.
 
 import numpy as np
 
+
 class Interpolator:
     """ Poorman's linear interpolator, doesn't require Scipy. """
-    
-    def __init__(self, tt=None, ss=None, ttss = None, left=None, right=None):
+
+    def __init__(self, tt=None, ss=None, ttss=None, left=None, right=None):
 
         if ttss is not None:
             tt, ss = zip(*ttss)
-        
+
         self.tt = 1.0*np.array(tt)
         self.ss = 1.0*np.array(ss)
         self.left = left
@@ -20,8 +21,8 @@ class Interpolator:
         self.tmin, self.tmax = min(tt), max(tt)
 
     def __call__(self, t):
-
         return np.interp(t, self.tt, self.ss, self.left, self.right)
+
 
 class Trajectory:
 
@@ -44,9 +45,9 @@ class Trajectory:
         return Trajectory(self.tt, self.xx+y, self.yy)
 
     def update_interpolators(self):
-        self.xi =  Interpolator(self.tt, self.xx)
-        self.yi =  Interpolator(self.tt, self.yy)
-    
+        self.xi = Interpolator(self.tt, self.xx)
+        self.yi = Interpolator(self.tt, self.yy)
+
     def txy(self, tms=False):
         return zip((1000 if tms else 1)*self.tt, self.xx, self.yy)
 
@@ -64,9 +65,9 @@ class Trajectory:
     def save_list(trajs, filename):
         N = len(trajs)
         arr = np.hstack([np.array(t.txy(tms=True)) for t in trajs])
-        np.savetxt( filename, arr, fmt="%d", delimiter='\t',
-                    header = "\t".join(N*['t (ms)', 'x', 'y']))
-    
+        np.savetxt(filename, arr, fmt="%d", delimiter='\t',
+                   header="\t".join(N*['t (ms)', 'x', 'y']))
+
     @staticmethod
     def load_list(filename):
 
